@@ -16,7 +16,7 @@ class Search extends Component {
         const __this = this;
         await this.setState({movies: [], pageNumber: 1, searchInput: e.target.value});
         this.findMovies(this.state.pageNumber).then(data => {
-            __this.setState({movies: [...data]});
+            __this.setState({movies: data});
         })
     }
 
@@ -43,7 +43,7 @@ class Search extends Component {
         const __this = this;
         this.findMovies(newPageNumber).then((data) => {
             if (data.length > 0) {
-                __this.setState({movies: [...data], pageNumber: newPageNumber});
+                __this.setState({movies: data, pageNumber: newPageNumber});
             }
         })
     }
@@ -52,7 +52,7 @@ class Search extends Component {
         let newPageNumber = this.state.pageNumber - 1;
         const __this = this;
         this.findMovies(newPageNumber).then((data) => {
-            __this.setState({movies: [...data], pageNumber: newPageNumber});
+            __this.setState({movies: data, pageNumber: newPageNumber});
         })
     }
 
