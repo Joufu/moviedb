@@ -20,7 +20,6 @@ class Search extends Component {
         })
     }
 
-
     async findMovies(pageNumber) {
         console.log(this.state.searchInput);
         const parameters = {

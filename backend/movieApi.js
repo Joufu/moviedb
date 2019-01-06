@@ -21,6 +21,14 @@ module.exports = function (app, db) {
             });
     });
 
+    app.get('/getMovieCount', function (req, res) {
+        db.collection("movies").count({}, null, function (err, movieCount) {
+               console.log(movieCount);
+                res.status(200);
+                res.send(JSON.stringify(movieCount))
+            });
+    });
+
     app.post('/search', function (req, res) {
         const data = req.body;
         let itemsPerPage = data.itemsPerPage;

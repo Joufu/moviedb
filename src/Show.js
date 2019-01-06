@@ -4,16 +4,27 @@ import Movie from "./Movie";
 
 class Show extends Component {
 
-    state = {movies: [], pageNumber: 1, itemsPerPage: 5};
+    state = {movies: [], pageNumber: 1, itemsPerPage: 5, pageCount: 0};
 
     getMovies(pageNumber) {
         return fetch(`http://localhost:2001/getMoviesByPage/${this.state.itemsPerPage}/${pageNumber}`)
             .then(response => response.json())
     }
 
+    getMovieCount() {
+        return fetch(`http://localhost:2001/getMovieCount`)
+            .then(response => response.json())
+    }
+
     componentWillMount() {
         this.getMovies(this.state.pageNumber).then((data) => {
             this.setState({movies: data})
+        });
+
+        this.getMovieCount().then(movieCount => {
+            const pageCount = Math.ceil(movieCount / this.state.itemsPerPage);
+            console.log(pageCount);
+            this.setState({pageCount: pageCount})
         })
     }
 
@@ -47,7 +58,13 @@ class Show extends Component {
                         <Button color="danger" onClick={this.loadPrevious.bind(this)}>Load Previous</Button>}
                     </Col>
                     <Col xs="auto">
-                        <Button color="primary" onClick={this.loadNext.bind(this)}>Load Next</Button>
+                        {this.state.pageNumber !== this.state.pageCount &&
+                        <Button color="primary" onClick={this.loadNext.bind(this)}>Load Next</Button>}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs="12">
+                        {this.state.pageNumber} / {this.state.pageCount}
                     </Col>
                 </Row>
             </div>
