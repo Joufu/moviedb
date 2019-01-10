@@ -4,6 +4,8 @@ import './App.css';
 import Add from "./Add.js"
 import Show from "./Show";
 import Search from "./Search";
+import {bindActionCreators} from "redux";
+import {connect} from "react-redux";
 
 
 class App extends Component {
@@ -35,4 +37,16 @@ class App extends Component {
     }
 }
 
-export default App;
+function mapStateToProps(state, ownProps) {
+    return state
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        dispatch,
+        ...bindActionCreators({}, dispatch)
+    }
+}
+
+
+export default connect()(App);

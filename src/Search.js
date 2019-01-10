@@ -2,7 +2,6 @@ import React, {Component} from "react";
 import Movie from "./Movie";
 import {Button, Col, Input, Row} from "reactstrap";
 
-//Klausimas del isorinio this.
 class Search extends Component {
 
     state = {
@@ -69,7 +68,6 @@ class Search extends Component {
                 <Input onChange={this.handleSearchInput.bind(this)} value={this.state.searchInput}/>
                 <Row>
                     {this.state.movies.map((element, i) => <Col xs="1" key={i}><Movie data={element} /></Col>)}
-                    {/*Klauimas  key={i}*/}
                 </Row>
                 {this.state.movies.length > 0 && <Row>
                     <Col xs="auto">
