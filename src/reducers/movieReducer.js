@@ -1,5 +1,5 @@
-import { ADD_MOVIES_TO_STATE } from '../actions/ActionTypes'
-const initialState = {movies: []};
+import { ADD_MOVIES_TO_STATE, GET_MOVIE_DETAILS } from '../actions/ActionTypes'
+const initialState = {movies: [], movieDetails: []};
 
 export default function moviesReducer(state = initialState, action) {
 
@@ -8,6 +8,11 @@ export default function moviesReducer(state = initialState, action) {
             return {
                 ...state,
                 movies: action.payload
+            };
+        case GET_MOVIE_DETAILS:
+            return{
+                ...state,
+                movieDetails: action.payload
             };
         default:
             return state

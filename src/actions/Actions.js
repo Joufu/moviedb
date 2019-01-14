@@ -4,7 +4,8 @@ import {
     INCREMENT_PAGENUM,
     PAGE_COUNT,
     SEARCH_STRING,
-    CLEAN_STATE
+    CLEAN_STATE,
+    GET_MOVIE_DETAILS
 } from './ActionTypes';
 
 export function pageNumberInc() {
@@ -44,4 +45,11 @@ export function cleanState() {
     return {
         type: CLEAN_STATE
     }
+}
+
+export function movieDetails(movieDetails) {
+    return {
+        type: GET_MOVIE_DETAILS,
+        payload: movieDetails.payload
+    };
 }

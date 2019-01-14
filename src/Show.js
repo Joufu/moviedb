@@ -2,11 +2,14 @@ import React, {Component} from 'react';
 import {Button, Col, Row} from "reactstrap";
 import Movie from "./Movie";
 import {bindActionCreators} from "redux";
-import {pageNumberInc,
+import {
+    pageNumberInc,
     pageNumberDec,
     addMoviesToState,
-    getPageCount} from "./actions/Actions";
+    getPageCount, cleanState
+} from "./actions/Actions";
 import {connect} from "react-redux";
+import showMovieDetails from "./showMovieDetails"
 
 class Show extends Component {
 
@@ -21,6 +24,8 @@ class Show extends Component {
     }
 
     componentWillMount() {
+        this.props.cleanState();
+
         this.getMovies(this.props.pageNumber).then(data => {
             this.props.addMoviesToState({payload: data});
         });
@@ -56,7 +61,7 @@ class Show extends Component {
         return (
             <div className="form-wrapper">
                 <Row>
-                    {this.props.movies.map((element, i) => <Col xs="1" key={i}><Movie data={element}/></Col>)}
+                    {this.props.movies ? this.props.movies.map((element, i) => <Col xs="2" key={i}><Movie data={element}/></Col>) : []}
                 </Row>
                 <Row>
                     <Col xs="12">
@@ -73,6 +78,11 @@ class Show extends Component {
                         <Button color="primary" onClick={this.loadNext.bind(this)}>Load Next</Button>}
                     </Col>
                 </Row>
+                <Row>
+                    <Col>
+                        <div>{showMovieDetails.MovieOverview(this.props.movieDetails)}</div>
+                    </Col>
+                </Row>
             </div>
         );
     }
@@ -83,7 +93,8 @@ function mapStateToProps(state) {
         pageNumber: state.pageCounter.pageNumber,
         pageCount: state.pageCounter.pageCount,
         itemsPerPage: state.pageCounter.itemsPerPage,
-        movies: state.moviesDB.movies
+        movies: state.moviesDB.movies,
+        movieDetails: state.moviesDB.movieDetails
     }
 }
 
@@ -91,7 +102,8 @@ const actionCreators = {
     pageNumberInc,
     pageNumberDec,
     addMoviesToState,
-    getPageCount
+    getPageCount,
+    cleanState
 };
 
 function mapDispatchToProps(dispatch) {

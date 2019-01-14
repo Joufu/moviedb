@@ -11,6 +11,7 @@ import {
     cleanState
 } from "./actions/Actions";
 import {connect} from "react-redux";
+import showMovieDetails from "./showMovieDetails";
 
 class Search extends Component {
 
@@ -67,7 +68,7 @@ class Search extends Component {
             <div>
                 <Input onChange={this.handleSearchInput.bind(this)} value={this.props.searchInput}/>
                 <Row>
-                    {this.props.movies.map((element, i) => <Col xs="1" key={i}><Movie data={element} /></Col>)}
+                    {this.props.movies.map((element, i) => <Col xs="2" key={i}><Movie data={element} /></Col>)}
                 </Row>
                 {this.props.movies.length > 0 && <Row>
                     <Col xs="auto">
@@ -77,6 +78,11 @@ class Search extends Component {
                         <Button color="primary" onClick={this.loadNext.bind(this)}>Load Next</Button>
                     </Col>
                 </Row>}
+                <Row>
+                    <Col>
+                        <div>{showMovieDetails.MovieOverview(this.props.movieDetails)}</div>
+                    </Col>
+                </Row>
             </div>
         );
     }
@@ -87,7 +93,8 @@ function mapStateToProps(state) {
         pageCount: state.pageCounter.pageCount,
         itemsPerPage: state.pageCounter.itemsPerPage,
         movies: state.moviesDB.movies,
-        searchInput: state.search.searchInput
+        searchInput: state.search.searchInput,
+        movieDetails: state.moviesDB.movieDetails
     }
 }
 
