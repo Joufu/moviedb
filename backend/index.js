@@ -30,7 +30,7 @@ app.use((req, res, next) => { //doesn't send response just adjusts it
 
 
 // Connection URL
-const url = 'mongodb://localhost:27017';
+const url = 'mongodb://192.168.56.101:27017';
 
 // Database Name
 const dbName = 'moviedb';

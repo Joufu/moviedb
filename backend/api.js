@@ -7,10 +7,10 @@ module.exports = function (app, db) {
         });
     });
 
-    app.put('/updateValue', function (req, response) {
+    app.put('/deleteMovie', function (req, response) {
         const data = req.body;
         const query = {key: req.body.key, value: req.body.value};
-        db.collection("test").updateOne(query, {$set: {value: req.body.updateValue}}, null, function (err, docs) {
+        db.collection("test").deleteOne(query, {$set: {value: req.body.updateValue}}, null, function (err, docs) {
             response.status(200);
             response.send(JSON.stringify(docs))
         })

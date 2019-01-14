@@ -5,79 +5,72 @@ import {bindActionCreators} from "redux";
 import {pageNumberInc,
     pageNumberDec,
     addMoviesToState,
-    cleanStateFromMovies} from "./actions/Actions";
+    getPageCount} from "./actions/Actions";
 import {connect} from "react-redux";
-
 
 class Show extends Component {
 
-    state = { pageNumber: 1, itemsPerPage: 5, pageCount: 0};
-
     getMovies(pageNumber) {
-        return fetch(`http://localhost:2001/getMoviesByPage/${this.state.itemsPerPage}/${pageNumber}`)
+        return fetch(`http://192.168.56.105:2001/getMoviesByPage/${this.props.itemsPerPage}/${pageNumber}`)
             .then(response => response.json())
     }
 
     getMovieCount() {
-        return fetch(`http://localhost:2001/getMovieCount`)
+        return fetch(`http://192.168.56.105:2001/getMovieCount`)
             .then(response => response.json())
     }
 
     componentWillMount() {
-        this.getMovies(this.props.pageNumber).then((data) => {
+        this.getMovies(this.props.pageNumber).then(data => {
             this.props.addMoviesToState({payload: data});
-           // console.log(this.props.movies[0].payload[0])
         });
 
         this.getMovieCount().then(movieCount => {
-            const pageCount = Math.ceil(movieCount / this.state.itemsPerPage);
-            this.setState({pageCount: pageCount})
+            const moviesPerPage = Math.ceil(movieCount / this.props.itemsPerPage);
+            this.props.getPageCount({payload: moviesPerPage});
         })
     }
 
+
     loadNext() {
-        let newPageNumber = this.state.pageNumber + 1;
         const __this = this;
-        const increase = __this.props.pageNumberInc;
+        let newPageNumber = this.props.pageNumber + 1;
         this.getMovies(newPageNumber).then((data) => {
             if (data.length > 0) {
-                __this.props.addMoviesToState({payload: data});
                 __this.props.pageNumberInc();
-                __this.setState({pageNumber: newPageNumber});
-            }
+                __this.props.addMoviesToState({payload: data});
+             }
         })
     }
 
     loadPrevious() {
-        let newPageNumber = this.state.pageNumber - 1;
         const __this = this;
-        this.getMovies(newPageNumber, this.state.itemsPerPage).then((data) => {
+        let newPageNumber = this.props.pageNumber - 1;
+        this.getMovies(newPageNumber).then((data) => {
             __this.props.pageNumberDec();
-            __this.setState({movies: data, pageNumber: newPageNumber});
+            __this.props.addMoviesToState({payload: data});
         })
     }
 
     render() {
         return (
-            <div>
+            <div className="form-wrapper">
                 <Row>
                     {this.props.movies.map((element, i) => <Col xs="1" key={i}><Movie data={element}/></Col>)}
-                    {/*<div>{this.props.movies}</div>*/}
-                </Row>
-                <Row>
-                    <Col xs="auto">
-                        {this.state.pageNumber > 1 &&
-                        <Button color="danger" onClick={this.loadPrevious.bind(this)}>Load Previous</Button>}
-                    </Col>
-                    <Col xs="auto">
-                        {this.state.pageNumber !== this.state.pageCount &&
-                        <Button color="primary" onClick={this.loadNext.bind(this)}>Load Next</Button>}
-                        <div>{this.props.pageNumber} Page num</div>
-                    </Col>
                 </Row>
                 <Row>
                     <Col xs="12">
-                        {this.state.pageNumber} / {this.state.pageCount}
+                        {this.props.pageNumber} / {this.props.pageCount}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs="auto">
+                        {this.props.pageNumber > 1 &&
+                        <Button color="danger" onClick={this.loadPrevious.bind(this)}>Load Previous</Button>}
+                    </Col>
+                    <Col xs="auto">
+                        {this.props.pageNumber !== this.props.pageCount &&
+                        <Button color="primary" onClick={this.loadNext.bind(this)}>Load Next</Button>}
                     </Col>
                 </Row>
             </div>
@@ -88,7 +81,9 @@ class Show extends Component {
 function mapStateToProps(state) {
     return {
         pageNumber: state.pageCounter.pageNumber,
-        movies: state.moviesDB.movies[0]
+        pageCount: state.pageCounter.pageCount,
+        itemsPerPage: state.pageCounter.itemsPerPage,
+        movies: state.moviesDB.movies
     }
 }
 
@@ -96,7 +91,7 @@ const actionCreators = {
     pageNumberInc,
     pageNumberDec,
     addMoviesToState,
-    cleanStateFromMovies
+    getPageCount
 };
 
 function mapDispatchToProps(dispatch) {

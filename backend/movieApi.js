@@ -46,9 +46,18 @@ module.exports = function (app, db) {
             .skip(itemsPerPage * (pageNumber - 1))
             .limit(itemsPerPage)
             .toArray(function (err, docs) {
-                console.log(docs);
+                console.log(docs)
                 res.status(200);
                 res.send(JSON.stringify(docs))
             });
+    })
+
+    app.post('/deleteMovie', function (req, response) {
+        const data = req.body;
+        const query = {title: data.title, release_date: data.release_date};
+        db.collection("movies").deleteOne(query, null, function (err, docs) {
+            response.status(200);
+            response.send(JSON.stringify(docs))
+        })
     })
 };

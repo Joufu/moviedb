@@ -1,7 +1,10 @@
-import {ADD_MOVIES_TO_STATE,
+import {
+    ADD_MOVIES_TO_STATE,
     DECREMENT_PAGENUM,
     INCREMENT_PAGENUM,
-    CLEAN_STATE_FROM_MOVIES
+    PAGE_COUNT,
+    SEARCH_STRING,
+    CLEAN_STATE
 } from './ActionTypes';
 
 export function pageNumberInc() {
@@ -19,12 +22,26 @@ export const pageNumberDec = () => {
 export function addMoviesToState(movies) {
     return {
         type: ADD_MOVIES_TO_STATE,
-        payload: movies
+        payload: movies.payload
     };
 
 }
-export function cleanStateFromMovies() {
+export function getPageCount(moviesPerPage) {
         return {
-            type: CLEAN_STATE_FROM_MOVIES,
+            type: PAGE_COUNT,
+            payload: moviesPerPage.payload
         };
 };
+
+export function searchString(string) {
+    return {
+        type: SEARCH_STRING,
+        payload: string
+    };
+};
+
+export function cleanState() {
+    return {
+        type: CLEAN_STATE
+    }
+}

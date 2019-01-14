@@ -9,7 +9,7 @@ class Movie extends Component {
 
     render() {
         return (
-            <div>
+              <div>
                 <Card>
                     <CardImg top width="100%" src={this.getImageLink()}/>
                     <CardBody>

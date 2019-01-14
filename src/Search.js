@@ -1,32 +1,38 @@
 import React, {Component} from "react";
 import Movie from "./Movie";
 import {Button, Col, Input, Row} from "reactstrap";
+import {bindActionCreators} from "redux";
+import {
+    pageNumberInc,
+    pageNumberDec,
+    addMoviesToState,
+    getPageCount,
+    searchString,
+    cleanState
+} from "./actions/Actions";
+import {connect} from "react-redux";
 
 class Search extends Component {
 
-    state = {
-        searchInput: '',
-        movies: [],
-        itemsPerPage: 5,
-        pageNumber: 1
-    };
-
     async handleSearchInput(e) {
         const __this = this;
-        await this.setState({movies: [], pageNumber: 1, searchInput: e.target.value});
-        this.findMovies(this.state.pageNumber).then(data => {
-            __this.setState({movies: data});
+        await this.props.searchString(e.target.value);
+        this.findMovies(this.props.pageNumber).then(data => {
+            __this.props.addMoviesToState({payload: data});
         })
     }
 
+    componentWillMount() {
+        this.props.cleanState()
+    }
+
     async findMovies(pageNumber) {
-        console.log(this.state.searchInput);
         const parameters = {
             pageNumber: pageNumber,
-            itemsPerPage: this.state.itemsPerPage,
-            searchInput: this.state.searchInput
+            itemsPerPage: this.props.itemsPerPage,
+            searchInput: this.props.searchInput
         };
-        return await fetch(`http://localhost:2001/search/`, {
+        return await fetch(`http://192.168.56.105:2001/search/`, {
             method: 'POST',
             body: JSON.stringify(parameters),
             headers: {
@@ -37,41 +43,35 @@ class Search extends Component {
     }
 
     loadNext() {
-        let newPageNumber = this.state.pageNumber + 1;
+        let newPageNumber = this.props.pageNumber + 1;
         const __this = this;
         this.findMovies(newPageNumber).then((data) => {
             if (data.length > 0) {
-                __this.setState({movies: data, pageNumber: newPageNumber});
+                __this.props.pageNumberInc();
+                __this.props.addMoviesToState({payload: data});
             }
         })
     }
 
     loadPrevious() {
-        let newPageNumber = this.state.pageNumber - 1;
+        let newPageNumber = this.props.pageNumber - 1;
         const __this = this;
         this.findMovies(newPageNumber).then((data) => {
-            __this.setState({movies: data, pageNumber: newPageNumber});
+            __this.props.pageNumberDec();
+            __this.props.addMoviesToState({payload: data});
         })
     }
-
-    // onSearchClicked() {
-    //     this.setState({pageNumber: 1});
-    //     const __this = this;
-    //     this.findMovies(this.state.pageNumber).then(data => {
-    //         __this.setState({movies: [...data]});
-    //     })
-    // }
 
     render() {
         return (
             <div>
-                <Input onChange={this.handleSearchInput.bind(this)} value={this.state.searchInput}/>
+                <Input onChange={this.handleSearchInput.bind(this)} value={this.props.searchInput}/>
                 <Row>
-                    {this.state.movies.map((element, i) => <Col xs="1" key={i}><Movie data={element} /></Col>)}
+                    {this.props.movies.map((element, i) => <Col xs="1" key={i}><Movie data={element} /></Col>)}
                 </Row>
-                {this.state.movies.length > 0 && <Row>
+                {this.props.movies.length > 0 && <Row>
                     <Col xs="auto">
-                        {this.state.pageNumber > 1 && <Button color="danger" onClick={this.loadPrevious.bind(this)}>Load Previous</Button>}
+                        {this.props.pageNumber > 1 && <Button color="danger" onClick={this.loadPrevious.bind(this)}>Load Previous</Button>}
                     </Col>
                     <Col xs="auto">
                         <Button color="primary" onClick={this.loadNext.bind(this)}>Load Next</Button>
@@ -81,5 +81,27 @@ class Search extends Component {
         );
     }
 }
+function mapStateToProps(state) {
+    return {
+        pageNumber: state.pageCounter.pageNumber,
+        pageCount: state.pageCounter.pageCount,
+        itemsPerPage: state.pageCounter.itemsPerPage,
+        movies: state.moviesDB.movies,
+        searchInput: state.search.searchInput
+    }
+}
 
-export default Search
+const actionCreators = {
+    pageNumberInc,
+    pageNumberDec,
+    addMoviesToState,
+    getPageCount,
+    searchString,
+    cleanState
+};
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators(actionCreators, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Search);
