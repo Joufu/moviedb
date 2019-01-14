@@ -45,12 +45,5 @@ export default {
                 </Form>
             </Container>
         );
-    },
-    movieList: function () {
-        return (
-            <Container className="form-wrapper">
-
-            </Container>
-        )
     }
 }

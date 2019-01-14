@@ -3,12 +3,12 @@ import Movie from "./Movie";
 import {Button, Col, Input, Row} from "reactstrap";
 import {bindActionCreators} from "redux";
 import {
-    pageNumberInc,
-    pageNumberDec,
     addMoviesToState,
+    cleanState,
     getPageCount,
-    searchString,
-    cleanState
+    pageNumberDec,
+    pageNumberInc,
+    searchString
 } from "./actions/Actions";
 import {connect} from "react-redux";
 import showMovieDetails from "./showMovieDetails";
@@ -65,14 +65,15 @@ class Search extends Component {
 
     render() {
         return (
-            <div>
+            <div className="form-wrapper">
                 <Input onChange={this.handleSearchInput.bind(this)} value={this.props.searchInput}/>
                 <Row>
-                    {this.props.movies.map((element, i) => <Col xs="2" key={i}><Movie data={element} /></Col>)}
+                    {this.props.movies.map((element, i) => <Col xs="2" key={i}><Movie data={element}/></Col>)}
                 </Row>
                 {this.props.movies.length > 0 && <Row>
                     <Col xs="auto">
-                        {this.props.pageNumber > 1 && <Button color="danger" onClick={this.loadPrevious.bind(this)}>Load Previous</Button>}
+                        {this.props.pageNumber > 1 &&
+                        <Button color="danger" onClick={this.loadPrevious.bind(this)}>Load Previous</Button>}
                     </Col>
                     <Col xs="auto">
                         <Button color="primary" onClick={this.loadNext.bind(this)}>Load Next</Button>
@@ -87,6 +88,7 @@ class Search extends Component {
         );
     }
 }
+
 function mapStateToProps(state) {
     return {
         pageNumber: state.pageCounter.pageNumber,

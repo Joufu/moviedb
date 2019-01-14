@@ -2,12 +2,7 @@ import React, {Component} from 'react';
 import {Button, Col, Row} from "reactstrap";
 import Movie from "./Movie";
 import {bindActionCreators} from "redux";
-import {
-    pageNumberInc,
-    pageNumberDec,
-    addMoviesToState,
-    getPageCount, cleanState
-} from "./actions/Actions";
+import {addMoviesToState, cleanState, getPageCount, pageNumberDec, pageNumberInc} from "./actions/Actions";
 import {connect} from "react-redux";
 import showMovieDetails from "./showMovieDetails"
 
@@ -44,7 +39,7 @@ class Show extends Component {
             if (data.length > 0) {
                 __this.props.pageNumberInc();
                 __this.props.addMoviesToState({payload: data});
-             }
+            }
         })
     }
 
@@ -61,7 +56,8 @@ class Show extends Component {
         return (
             <div className="form-wrapper">
                 <Row>
-                    {this.props.movies ? this.props.movies.map((element, i) => <Col xs="2" key={i}><Movie data={element}/></Col>) : []}
+                    {this.props.movies ? this.props.movies.map((element, i) => <Col xs="2" key={i}><Movie
+                        data={element}/></Col>) : []}
                 </Row>
                 <Row>
                     <Col xs="12">
